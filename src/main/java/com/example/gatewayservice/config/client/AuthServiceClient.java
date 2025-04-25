@@ -1,8 +1,6 @@
 package com.example.gatewayservice.config.client;
 
-
-import com.example.gatewayservice.dto.ValidTokenRequestDTO;
-import com.example.gatewayservice.dto.ValidTokenResponseDTO;
+import com.example.gatewayservice.dto.RefreshTokenResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,20 +12,12 @@ public class AuthServiceClient {
 
     private final WebClient authClient;
 
-    // 1. 유효, 2. 무효, -1: 오류
-    public Mono<Integer> validToken(String token) {
-        token = token.replaceFirst("(?i)^Bearer ", "");
+    public Mono<RefreshTokenResponseDTO> refreshToken(String refreshToken) {
         return authClient.post()
-                .uri("/auths/valid-token")
-                .bodyValue(
-                        ValidTokenRequestDTO.builder()
-                                .token(token)
-                                .build()
-                )
+                .uri("/auths/refresh-token")
+                .header("Authorization", "Bearer " + refreshToken)
+                .cookie("refreshToken", refreshToken)
                 .retrieve()
-                .bodyToMono(ValidTokenResponseDTO.class)
-                .map(ValidTokenResponseDTO::getStatusNum)
-                .onErrorResume(e -> Mono.just(-1));
+                .bodyToMono(RefreshTokenResponseDTO.class);
     }
-
 }

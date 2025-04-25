@@ -17,7 +17,7 @@ public class WebEndpoints {
     @Bean
     public RouterFunction<ServerResponse> routes() {
         return RouterFunctions.route()
-                .path("/service-fallback", builder -> builder
+                .path("/fallback/static", builder -> builder
                         .GET(this::fallback)
                         .POST(this::fallback)
                         .PUT(this::fallback)
