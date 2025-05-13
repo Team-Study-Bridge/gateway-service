@@ -25,17 +25,14 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 public class PreGatewayFilter extends AbstractGatewayFilterFactory<PreGatewayFilter.Config> {
 
-    private final WhitelistProperties whitelistProperties;
     private final TokenProvider tokenProvider;
     private final RedisTemplate<String, String> redisTemplate;
     private final AuthServiceClient authServiceClient;
 
-    public PreGatewayFilter(WhitelistProperties whitelistProperties,
-                            TokenProvider tokenProvider,
+    public PreGatewayFilter(TokenProvider tokenProvider,
                             RedisTemplate<String, String> redisTemplate,
                             AuthServiceClient authServiceClient) {
         super(Config.class);
-        this.whitelistProperties = whitelistProperties;
         this.tokenProvider = tokenProvider;
         this.redisTemplate = redisTemplate;
         this.authServiceClient = authServiceClient;
@@ -45,6 +42,12 @@ public class PreGatewayFilter extends AbstractGatewayFilterFactory<PreGatewayFil
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             String token = exchange.getRequest().getHeaders().getFirst(AUTHORIZATION);
+            String path = exchange.getRequest().getURI().getPath();
+
+            // ✅ 인증 없이 통과할 경로 예외 처리
+            if (path.matches("^/lectures/video/\\d+/stream$")) {
+                return chain.filter(exchange);
+            }
 
             if (token == null || !token.toLowerCase().startsWith(config.getTokenPrefix().toLowerCase())) {
                 log.warn("Authorization 헤더 누락 또는 Bearer 없음");
