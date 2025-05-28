@@ -46,12 +46,6 @@ jobs:
         run: |
           sed -i "s|tag: .*|tag: $IMAGE_TAG|" $HELM_PATH
 
-      - name: Update Helm values.yaml with image tag and secrets
-        run: |
-          sed -i "s|__CONFIG_SERVER_URL__|${{ secrets.CONFIG_SERVER_URL }}|" $HELM_PATH
-          sed -i "s|__VAULT_URI__|${{ secrets.VAULT_URI }}|" $HELM_PATH
-          sed -i "s|__VAULT_TOKEN__|${{ secrets.VAULT_TOKEN }}|" $HELM_PATH
-
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v5
