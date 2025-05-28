@@ -4,7 +4,7 @@ replicaCount: 1
 
 image:
   repository: 879381276515.dkr.ecr.ap-northeast-2.amazonaws.com/aigongbu/service-images
-  tag: 1c12dd2b6bed62fd32f2af96844313db7bfccf88
+  tag: ec56fd29c6ac7ad8e8cc07d62bf6dbbede5c1984
   pullPolicy: IfNotPresent
 
 containerPort: 80
@@ -21,11 +21,11 @@ env:
   - name: SPRING_PROFILES_ACTIVE
     value: dev
   - name: CONFIG_SERVER_URL
-    value: __CONFIG_SERVER_URL__
+    value: http://config-service:8888
   - name: VAULT_URI
-    value: __VAULT_URI__
+    value: http://vault.vault:8200
   - name: VAULT_TOKEN
-    value: __VAULT_TOKEN__
+    value: f6bxR0xz6auzfZJ1
 
 service:
   type: ClusterIP
