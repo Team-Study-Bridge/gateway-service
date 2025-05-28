@@ -3,21 +3,29 @@ name: gateway-service
 replicaCount: 1
 
 image:
-  repository: 879381276515.dkr.ecr.ap-northeast-2.amazonaws.com/aigungbu/service-images
+  repository: 879381276515.dkr.ecr.ap-northeast-2.amazonaws.com/aigongbu/service-images
   tag: 1c12dd2b6bed62fd32f2af96844313db7bfccf88
   pullPolicy: IfNotPresent
 
 containerPort: 80
 
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 400m
+    memory: 384Mi
+
 env:
   - name: SPRING_PROFILES_ACTIVE
     value: dev
   - name: CONFIG_SERVER_URL
-    value: http://config-service:8888
+    value: __CONFIG_SERVER_URL__
   - name: VAULT_URI
-    value: VAULT_URI=http://vault.vault.svc.cluster.local:8200
+    value: __VAULT_URI__
   - name: VAULT_TOKEN
-    value: myroot
+    value: __VAULT_TOKEN__
 
 service:
   type: ClusterIP
